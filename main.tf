@@ -14,20 +14,18 @@ terraform {
   } 
 }
 
-provider "azurerm" {
-  features {}
-  skip_provider_registration = true
+locals{
+  tags = {
+    "Environment" = var.environment 
+  }
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "TomTerraformTesting"
-  location = "UK South"
-}
-
-resource "azurerm_storage_account" "storage" {
-  name     = "sttomtestdevuks1"
-  location = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_storage_account" "securestorage" {
+  resource_group_name = var.resource_group_name
+  location = var.location
+  name = var.storage_account_name
   account_tier = "Standard"
-  account_replication_type = "LRS"
+  account_replication_type = var.environment == "Production" ? "GRS" : "LRS"
+  public_network_access_enabled = false
+  tags = local.tags
 }
