@@ -13,7 +13,7 @@ terraform {
     } 
   } 
 }
-#
+
 locals{
   tags = {
     "Environment" = var.environment 
